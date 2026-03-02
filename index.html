@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enzo Sorano | Portfolio</title>
+  <style>
+    /* ── Reset & Variables ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f0f13;
+      --surface:   #1a1a24;
+      --border:    #2a2a3a;
+      --accent:    #7c6fff;
+      --accent2:   #ff6fbb;
+      --text:      #e8e8f0;
+      --muted:     #8888aa;
+      --radius:    12px;
+      --max-w:     900px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ── Navbar ────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(15,15,19,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Hero ──────────────────────────────────────────────── */
+    #hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(124,111,255,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(255,111,187,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-name {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-name span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.8rem;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Sections shared ────────────────────────────────────── */
+    section { padding: 5rem 2rem; }
+
+    .section-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 3rem;
+    }
+
+    /* ── About ─────────────────────────────────────────────── */
+    #about { background: var(--surface); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .about-text p { color: var(--muted); margin-bottom: 1rem; }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+    }
+
+    .skill-tag {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* ── Projects ──────────────────────────────────────────── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .project-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      flex: 1;
+      margin-bottom: 1.25rem;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .project-tag {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.6rem;
+      background: rgba(124,111,255,0.12);
+      color: var(--accent);
+      border-radius: 999px;
+    }
+
+    .project-links { display: flex; gap: 0.75rem; }
+
+    .project-link {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .project-link:hover { color: var(--text); }
+
+    /* ── Experience ────────────────────────────────────────── */
+    #experience { background: var(--surface); }
+
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 140px 1px 1fr;
+      gap: 0 2rem;
+      padding-bottom: 2.5rem;
+    }
+
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-date {
+      text-align: right;
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding-top: 0.2rem;
+    }
+
+    .timeline-line {
+      position: relative;
+      background: var(--border);
+    }
+
+    .timeline-line::before {
+      content: '';
+      position: absolute;
+      top: 0.3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .timeline-body { padding-top: 0; }
+
+    .timeline-role {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+
+    .timeline-company {
+      font-size: 0.85rem;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    .timeline-desc { font-size: 0.88rem; color: var(--muted); }
+
+    /* ── Contact ───────────────────────────────────────────── */
+    #contact {
+      text-align: center;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.4rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .contact-link:hover { border-color: var(--accent); color: var(--text); }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .timeline-item { grid-template-columns: 1fr; gap: 0.25rem; }
+      .timeline-line { display: none; }
+      .timeline-date { text-align: left; }
+      nav { padding: 1rem; }
+      .nav-links { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ── -->
+  <nav>
+    <a class="nav-logo" href="#hero">enzosorano</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section id="hero">
+    <div class="hero-content">
+      <div class="hero-tag">Available for opportunities</div>
+      <h1 class="hero-name">Hi, I'm <span>Enzo Sorano</span></h1>
+      <p class="hero-sub">
+        A passionate developer building things for the web. I love clean code, great design, and solving hard problems.
+      </p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#projects">View My Work</a>
+        <a class="btn btn-ghost" href="#contact">Get In Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── About ── -->
+  <section id="about">
+    <div class="section-inner">
+      <p class="section-label">About Me</p>
+      <h2 class="section-title">A little about who I am</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            I'm a software developer with a passion for creating elegant, efficient solutions.
+            Whether it's building web apps, exploring new frameworks, or diving into algorithms,
+            I enjoy every step of the process.
+          </p>
+          <p>
+            Outside of code, you can find me exploring new technologies, contributing to open-source,
+            or learning something completely unrelated just for fun.
+          </p>
+          <div class="skills-list">
+            <!-- TODO: update with your actual skills -->
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">TypeScript</span>
+            <span class="skill-tag">React</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Node.js</span>
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">SQL</span>
+            <span class="skill-tag">CSS</span>
+          </div>
+        </div>
+        <div class="about-stats">
+          <!-- TODO: update these numbers -->
+          <div class="stat-card">
+            <div class="stat-number">10+</div>
+            <div class="stat-label">Projects Completed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">3+</div>
+            <div class="stat-label">Years Coding</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">5+</div>
+            <div class="stat-label">Technologies</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">∞</div>
+            <div class="stat-label">Curiosity</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Projects ── -->
+  <section id="projects">
+    <div class="section-inner">
+      <p class="section-label">Projects</p>
+      <h2 class="section-title">Things I've built</h2>
+      <div class="projects-grid">
+
+        <!-- TODO: replace with your real projects -->
+        <div class="project-card">
+          <div class="project-icon">🚀</div>
+          <div class="project-title">Project Alpha</div>
+          <p class="project-desc">A short description of what this project does and the problem it solves. Keep it concise.</p>
+          <div class="project-tags">
+            <span class="project-tag">React</span>
+            <span class="project-tag">Node.js</span>
+            <span class="project-tag">MongoDB</span>
+          </div>
+          <div class="project-links">
+            <a class="project-link" href="#">→ Live Demo</a>
+            <a class="project-link" href="#">→ GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-icon">🛠️</div>
+          <div class="project-title">Project Beta</div>
+          <p class="project-desc">Another project description. Explain the key features or the tech challenge you tackled.</p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">FastAPI</span>
+            <span class="project-tag">PostgreSQL</span>
+          </div>
+          <div class="project-links">
+            <a class="project-link" href="#">→ Live Demo</a>
+            <a class="project-link" href="#">→ GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-icon">🎯</div>
+          <div class="project-title">Project Gamma</div>
+          <p class="project-desc">A third project. Maybe a CLI tool, a library, or an interesting side project you're proud of.</p>
+          <div class="project-tags">
+            <span class="project-tag">TypeScript</span>
+            <span class="project-tag">CLI</span>
+          </div>
+          <div class="project-links">
+            <a class="project-link" href="#">→ GitHub</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Experience ── -->
+  <section id="experience">
+    <div class="section-inner">
+      <p class="section-label">Experience</p>
+      <h2 class="section-title">Where I've worked</h2>
+      <div class="timeline">
+
+        <!-- TODO: replace with your real experience -->
+        <div class="timeline-item">
+          <div class="timeline-date">2024 – Present</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Software Engineer</div>
+            <div class="timeline-company">Company Name</div>
+            <p class="timeline-desc">Brief description of your role, responsibilities, and impact. What did you build or improve?</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2023 – 2024</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Developer Intern</div>
+            <div class="timeline-company">Another Company</div>
+            <p class="timeline-desc">What you worked on, technologies used, and any notable achievements during the internship.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2022 – 2023</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Freelance Developer</div>
+            <div class="timeline-company">Self-employed</div>
+            <p class="timeline-desc">Built websites and tools for clients. Managed projects end-to-end from requirements to deployment.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ── -->
+  <section id="contact">
+    <div class="section-inner">
+      <p class="section-label">Contact</p>
+      <h2 class="section-title">Let's work together</h2>
+      <p style="color: var(--muted); max-width: 480px; margin: 0 auto;">
+        Have a project in mind, a question, or just want to say hi?
+        My inbox is always open.
+      </p>
+      <div class="contact-links">
+        <!-- TODO: replace href values with your real links -->
+        <a class="contact-link" href="mailto:you@example.com">
+          ✉ Email Me
+        </a>
+        <a class="contact-link" href="https://github.com/enzoSorano" target="_blank" rel="noopener">
+          ⌥ GitHub
+        </a>
+        <a class="contact-link" href="https://linkedin.com/in/yourhandle" target="_blank" rel="noopener">
+          ↗ LinkedIn
+        </a>
+        <a class="contact-link" href="/resume.pdf" target="_blank" rel="noopener">
+          ↓ Resume
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <p>Designed &amp; built by Enzo Sorano &mdash; <span id="year"></span></p>
+  </footer>
+
+  <script>
+    // Auto-update year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Subtle scroll-reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.project-card, .timeline-item, .stat-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>

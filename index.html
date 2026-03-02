@@ -245,29 +245,37 @@
     .carousel-wrapper {
       position: relative;
       width: 100%;
-    }
-
-    .carousel-track-outer {
+      perspective: 1000px;
       overflow: hidden;
-      border-radius: var(--radius);
+      padding: 2rem 0 1rem;
     }
 
     .carousel-track {
       display: flex;
-      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 380px;
     }
 
     .carousel-slide {
-      min-width: 100%;
+      position: absolute;
+      width: 220px;
+      cursor: pointer;
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform 0.5s cubic-bezier(0.4,0,0.2,1),
+                  opacity   0.5s ease,
+                  filter    0.5s ease,
+                  z-index   0s   0.25s;
+      user-select: none;
     }
 
     .carousel-slide img {
       width: 100%;
-      height: 480px;
+      aspect-ratio: 3 / 4;
       object-fit: cover;
-      object-position: center top;
       display: block;
-      border-radius: var(--radius);
     }
 
     /* Arrow buttons */
@@ -279,7 +287,7 @@
       height: 44px;
       border-radius: 50%;
       border: 1px solid var(--border);
-      background: rgba(15,15,19,0.75);
+      background: rgba(15,15,19,0.8);
       backdrop-filter: blur(8px);
       color: var(--text);
       font-size: 1.1rem;
@@ -288,12 +296,13 @@
       align-items: center;
       justify-content: center;
       transition: background 0.2s, border-color 0.2s;
-      z-index: 10;
+      z-index: 20;
     }
 
     .carousel-btn:hover { background: var(--accent); border-color: var(--accent); }
-    .carousel-btn.prev { left: 0.75rem; }
-    .carousel-btn.next { right: 0.75rem; }
+    .carousel-btn.prev { left: 0.5rem; }
+    .carousel-btn.next { right: 0.5rem; }
+    .carousel-btn:focus { outline: none; }
 
     /* Dot indicators */
     .carousel-dots {
@@ -530,12 +539,11 @@
   <!-- ── Projects ── -->
   <section id="projects">
     <div class="section-inner">
-      <p class="section-label">Game Development</p>
-      <h2 class="section-title">Titles I've worked on</h2>
+      <p class="section-label" style="text-align: center;">Game Development</p>
+      <h2 class="section-title" style="text-align: center;">Titles I've worked on</h2>
 
       <div class="carousel-wrapper">
-        <div class="carousel-track-outer">
-          <div class="carousel-track" id="carouselTrack">
+        <div class="carousel-track" id="carouselTrack">
             <div class="carousel-slide"><img src="pictures/gameCovers/Call_of_Duty_2.jpg"            alt="Call of Duty 2" /></div>
             <div class="carousel-slide"><img src="pictures/gameCovers/call_of_duty_3.png"            alt="Call of Duty 3" /></div>
             <div class="carousel-slide"><img src="pictures/gameCovers/Call_of_duty_one.jpg"          alt="Call of Duty 1" /></div>
@@ -545,10 +553,10 @@
             <div class="carousel-slide"><img src="pictures/gameCovers/Spyro_Reignited_Trilogy.png"   alt="Spyro Reignited Trilogy" /></div>
             <div class="carousel-slide"><img src="pictures/gameCovers/THPS_3_3.jpg"                  alt="Tony Hawk's Pro Skater 3" /></div>
             <div class="carousel-slide"><img src="pictures/gameCovers/tony_hawk_pro_skater_1_2.jpg"  alt="Tony Hawk's Pro Skater 1+2" /></div>
-          </div>
+            <div class="carousel-slide"><img src="pictures/gameCovers/D2R_NINTENDO_16x9_1920x1080_v2.webp" alt="Diablo II: Resurrected" /></div>
         </div>
-        <button class="carousel-btn prev" id="carouselPrev" aria-label="Previous">&#8592;</button>
-        <button class="carousel-btn next" id="carouselNext" aria-label="Next">&#8594;</button>
+        <button class="carousel-btn prev" id="carouselPrev" tabindex="-1" aria-label="Previous">&#8592;</button>
+        <button class="carousel-btn next" id="carouselNext" tabindex="-1" aria-label="Next">&#8594;</button>
       </div>
 
       <div class="carousel-dots" id="carouselDots"></div>
@@ -694,6 +702,10 @@
       {
         title: "Tony Hawk's Pro Skater 1+2",
         desc: 'TODO: Describe your role and contributions on this title.'
+      },
+      {
+        title: 'Diablo II: Resurrected',
+        desc: 'TODO: Describe your role and contributions on this title.'
       }
     ];
 
@@ -701,16 +713,29 @@
     const dotsEl    = document.getElementById('carouselDots');
     const infoTitle = document.getElementById('gameInfoTitle');
     const infoDesc  = document.getElementById('gameInfoDesc');
+    const slides    = Array.from(track.querySelectorAll('.carousel-slide'));
+    const total     = slides.length;
     let current     = 0;
     let autoTimer;
+
+    // Coverflow config
+    const CARD_W   = 220;   // px — matches CSS width
+    const SPACING  = 150;   // horizontal distance between adjacent cards
+    const ROT_Y    = 45;    // degrees to rotate side cards
+    const SIDE_SCALE = 0.75;
 
     // Build dots
     games.forEach((_, i) => {
       const dot = document.createElement('button');
       dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
       dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-      dot.addEventListener('click', () => goTo(i));
+      dot.addEventListener('click', () => { goTo(i); resetAuto(); });
       dotsEl.appendChild(dot);
+    });
+
+    // Make slides clickable
+    slides.forEach((slide, i) => {
+      slide.addEventListener('click', () => { goTo(i); resetAuto(); });
     });
 
     function updateInfo() {
@@ -719,33 +744,68 @@
     }
 
     function goTo(index) {
-      current = (index + games.length) % games.length;
-      track.style.transform = `translateX(-${current * 100}%)`;
-      dotsEl.querySelectorAll('.carousel-dot').forEach((d, i) => {
-        d.classList.toggle('active', i === current);
+      current = (index + total) % total;
+
+      slides.forEach((slide, i) => {
+        // Relative position to current (-n … 0 … +n)
+        let offset = i - current;
+        // Wrap around for shortest path
+        if (offset > total / 2)  offset -= total;
+        if (offset < -total / 2) offset += total;
+
+        const tx      = offset * SPACING;
+        const ry      = offset === 0 ? 0 : (offset > 0 ? -ROT_Y : ROT_Y);
+        const scale   = offset === 0 ? 1 : SIDE_SCALE;
+        const opacity = offset === 0 ? 1 : Math.max(0, 1 - Math.abs(offset) * 0.35);
+        const gscale  = offset === 0 ? 0 : Math.min(1, Math.abs(offset) * 0.6);
+        const zIndex  = total - Math.abs(offset);
+
+        slide.style.transform  = `translateX(${tx}px) rotateY(${ry}deg) scale(${scale})`;
+        slide.style.opacity    = opacity;
+        slide.style.filter     = `grayscale(${gscale})`;
+        slide.style.zIndex     = zIndex;
+
+        // Hide slides that are too far away
+        slide.style.visibility = Math.abs(offset) > 3 ? 'hidden' : 'visible';
       });
+
+      // Dots
+      dotsEl.querySelectorAll('.carousel-dot').forEach((d, i) =>
+        d.classList.toggle('active', i === current)
+      );
+
       updateInfo();
     }
 
     function startAuto() {
-      autoTimer = setInterval(() => goTo(current + 1), 4000);
+      clearTimeout(autoTimer);
+      autoTimer = setTimeout(() => {
+        goTo(current + 1);
+        startAuto();
+      }, 7000);
     }
 
     function resetAuto() {
-      clearInterval(autoTimer);
       startAuto();
     }
 
     document.getElementById('carouselPrev').addEventListener('click', () => { goTo(current - 1); resetAuto(); });
     document.getElementById('carouselNext').addEventListener('click', () => { goTo(current + 1); resetAuto(); });
 
+    // Keyboard arrow support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft')  { goTo(current - 1); resetAuto(); }
+      if (e.key === 'ArrowRight') { goTo(current + 1); resetAuto(); }
+    });
+
     // Pause on hover
     const wrapper = document.querySelector('.carousel-wrapper');
-    wrapper.addEventListener('mouseenter', () => clearInterval(autoTimer));
+    wrapper.addEventListener('mouseenter', () => clearTimeout(autoTimer));
     wrapper.addEventListener('mouseleave', startAuto);
 
     // Init
     updateInfo();
+    goTo(0);
     startAuto();
   </script>
 
